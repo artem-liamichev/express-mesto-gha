@@ -52,7 +52,7 @@ const updateUserProfile = (req, res) => {
       if (!user) {
         res.status(404).send({ message: 'Пользователь не найден' });
       } else {
-        res.status(200).send(req.body);
+        res.status(200).send({ name: req.body.name, about: req.body.about });
       }
     })
     .catch((err) => {
@@ -72,7 +72,7 @@ const updateUserAvatar = (req, res) => {
       if (!user) {
         res.status(404).send({ message: 'Пользователь не найден' });
       } else {
-        res.status(200).send(req.body.avatar);
+        res.status(200).send({ avatar: req.body.avatar });
       }
     })
     .catch((err) => {
