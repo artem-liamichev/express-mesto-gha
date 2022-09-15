@@ -79,31 +79,51 @@ const updateUserProfile = (req, res) => {
       if (!user) {
         res.status(404).send({ message: 'Пользователь не найден' });
       } else {
-        res.status(200).send({ data: user });
+        res.status(200).send(req.body);
       }
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданы некорректные данные' });
       } else {
-        res.status(500).send({ message: 'Ошибка по умолчанию', err });
+        res.status(500).send({ message: 'Ошибка по умолчанию' });
       }
     });
 };
 
-const updateUserAvatar = async (req, res) => {
-  try {
-    const user = await User.findByIdAndUpdate(req.user._id, { $set: { avatar: req.body.avatar } });
-    if (!user) {
-      return res
-        .status(404)
-        .send({ message: 'Пользователь не найден' });
-    }
-    res.status(200).send({ message: 'updated' });
-  } catch (e) {
-    res.status(500).send({ message: 'Ошибка по умолчанию' });
-  }
+const updateUserAvatar = (req, res) => {
+  User.findByIdAndUpdate(req.user._id, {
+    $set: { avatar: req.body.avatar },
+  }, { runValidators: true })
+    .then((user) => {
+      if (!user) {
+        res.status(404).send({ message: 'Пользователь не найден' });
+      } else {
+        res.status(200).send(req.body);
+      }
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Переданы некорректные данные' });
+      } else {
+        res.status(500).send({ message: 'Ошибка по умолчанию' });
+      }
+    });
 };
+
+// const updateUserAvatar = async (req, res) => {
+//   try {
+//     const user = await User.findByIdAndUpdate(req.user._id, { $set: { avatar: req.body.avatar } });
+//     if (!user) {
+//       return res
+//         .status(404)
+//         .send({ message: 'Пользователь не найден' });
+//     }
+//     res.status(200).send({ message: 'updated' });
+//   } catch (e) {
+//     res.status(500).send({ message: 'Ошибка по умолчанию' });
+//   }
+// };
 
 module.exports = {
   createUser,
