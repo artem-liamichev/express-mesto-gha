@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const { NOT_FOUND, BAD_REQUEST, INTERNAL_SEVER_ERROR } = require('../utils/errors');
 
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
@@ -6,9 +7,9 @@ const createUser = (req, res) => {
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: `${Object.values(err.errors).map((e) => e.message).join(', ')}` });
+        res.status(BAD_REQUEST).send({ message: `${Object.values(err.errors).map((e) => e.message).join(', ')}` });
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        res.status(INTERNAL_SEVER_ERROR).send({ message: 'Произошла ошибка' });
       }
     });
 };
@@ -18,9 +19,9 @@ const getUsers = (req, res) => {
     .then((users) => res.status(200).send(users))
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Переданы некорректные данные' });
+        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные' });
       } else {
-        res.status(500).send({ message: 'Ошибка по умолчанию' });
+        res.status(INTERNAL_SEVER_ERROR).send({ message: 'Произошла ошибка' });
       }
     });
 };
@@ -30,16 +31,16 @@ const getUserById = (req, res) => {
   User.findById(id)
     .then((user) => {
       if (!user) {
-        res.status(404).send({ message: 'Пользователь не найден' });
+        res.status(NOT_FOUND).send({ message: 'Пользователь не найден' });
       } else {
         res.status(200).send(user);
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Переданы некорректные данные' });
+        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные' });
       } else {
-        res.status(500).send({ message: 'Ошибка по умолчанию' });
+        res.status(INTERNAL_SEVER_ERROR).send({ message: 'Произошла ошибка' });
       }
     });
 };
@@ -47,15 +48,15 @@ const getUserById = (req, res) => {
 const updateUserProfile = (req, res) => {
   User.findByIdAndUpdate(req.user._id, {
     $set: { name: req.body.name, about: req.body.about },
-  }, { runValidators: true })
-    .then((user) => {
+  }, { runValidators: true, new: true })
+    .then(() => {
       res.status(200).send({ name: req.body.name, about: req.body.about });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные' });
+        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные' });
       } else {
-        res.status(500).send({ message: 'Ошибка по умолчанию' });
+        res.status(INTERNAL_SEVER_ERROR).send({ message: 'Произошла ошибка' });
       }
     });
 };
@@ -63,15 +64,15 @@ const updateUserProfile = (req, res) => {
 const updateUserAvatar = (req, res) => {
   User.findByIdAndUpdate(req.user._id, {
     $set: { avatar: req.body.avatar },
-  }, { runValidators: true })
-    .then((user) => {
+  }, { runValidators: true, new: true })
+    .then(() => {
       res.status(200).send({ avatar: req.body.avatar });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные' });
+        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные' });
       } else {
-        res.status(500).send({ message: 'Ошибка по умолчанию' });
+        res.status(INTERNAL_SEVER_ERROR).send({ message: 'Произошла ошибка' });
       }
     });
 };

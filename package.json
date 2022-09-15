@@ -6,14 +6,14 @@
   "scripts": {
     "lint": "npx eslint",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js",
-    "prod": "node app.js"
+    "dev": "nodemon app.js",
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/artem-liamichev/express-mesto-gha.git"
   },
-  "author": "artem",
+  "author": "Artem Liamichev",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/artem-liamichev/express-mesto-gha/issues"
