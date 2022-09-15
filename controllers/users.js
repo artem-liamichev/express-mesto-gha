@@ -49,7 +49,7 @@ const updateUserProfile = (req, res) => {
     $set: { name: req.body.name, about: req.body.about },
   }, { runValidators: true })
     .then((user) => {
-      res.status(200).send(user);
+      res.status(200).send({ name: req.body.name, about: req.body.about });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -65,7 +65,7 @@ const updateUserAvatar = (req, res) => {
     $set: { avatar: req.body.avatar },
   }, { runValidators: true })
     .then((user) => {
-      res.status(200).send(user);
+      res.status(200).send({ avatar: req.body.avatar });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
