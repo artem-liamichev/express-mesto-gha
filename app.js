@@ -32,7 +32,7 @@ app.use((req, res, next) => {
 app.use('/users', userRoutes);
 app.use('/cards', cardRoutes);
 
-app.all('/', (req, res, next) => {
+app.all('*', (req, res, next) => {
   res.status(404).send({ message: 'Неправильный путь' });
   next();
 });
