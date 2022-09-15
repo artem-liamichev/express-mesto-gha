@@ -78,20 +78,6 @@ const updateUserAvatar = (req, res) => {
     });
 };
 
-// const updateUserAvatar = async (req, res) => {
-//   try {
-//     const user = await User.findByIdAndUpdate(req.user._id, { $set: { avatar: req.body.avatar } });
-//     if (!user) {
-//       return res
-//         .status(404)
-//         .send({ message: 'Пользователь не найден' });
-//     }
-//     res.status(200).send({ message: 'updated' });
-//   } catch (e) {
-//     res.status(500).send({ message: 'Ошибка по умолчанию' });
-//   }
-// };
-
 module.exports = {
   createUser,
   getUsers,
