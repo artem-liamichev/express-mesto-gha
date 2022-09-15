@@ -20,6 +20,8 @@ const createCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(400).send({ message: `${Object.values(err.errors).map((e) => e.message).join(', ')}` });
+      } else if (err.name === 'ValidationError') {
+        res.status(400).send({ message: `${Object.values(err.errors).map((e) => e.message).join(', ')}` });
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
       }
@@ -67,12 +69,8 @@ const likeCard = (req, res) => {
         res.status(200).send({ data: card });
       }
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Удаление лайка с некорректным id' });
-      } else {
-        res.status(500).send({ message: 'Ошибка по умолчанию' });
-      }
+    .catch(() => {
+      res.status(500).send({ message: 'Ошибка по умолчанию' });
     });
 };
 
@@ -95,8 +93,8 @@ const dislikeCard = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные' });
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Удаление лайка с некорректным id' });
       } else {
         res.status(500).send({ message: 'Ошибка по умолчанию' });
       }
