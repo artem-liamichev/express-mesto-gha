@@ -9,7 +9,7 @@ const getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.status(200).send(cards))
     .catch(() => {
-      res.status(500).send({ message: 'Ошибка по умолчанию' })
+      res.status(500).send({ message: 'Ошибка по умолчанию' });
     });
 };
 
@@ -18,7 +18,7 @@ const createCard = (req, res) => {
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
         res.status(400).send({ message: `${Object.values(err.errors).map((e) => e.message).join(', ')}` });
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
@@ -41,7 +41,13 @@ const deleteCard = (req, res) => {
         res.status(200).send({ message: 'deleted' });
       }
     })
-    .catch(() => { res.status(500).send({ message: 'Ошибка по умолчанию' }); });
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Удаление лайка с некорректным id' });
+      } else {
+        res.status(500).send({ message: 'Ошибка по умолчанию' });
+      }
+    });
 };
 
 // const deleteCard = async (req, res) => {
@@ -62,14 +68,13 @@ const likeCard = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные' });
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Удаление лайка с некорректным id' });
       } else {
         res.status(500).send({ message: 'Ошибка по умолчанию' });
       }
     });
 };
-
 
 // const likeCard = async (req, res) => {
 //   await Card.findByIdAndUpdate(req.params.cardId, {
