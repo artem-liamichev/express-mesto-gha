@@ -49,11 +49,7 @@ const updateUserProfile = (req, res) => {
     $set: { name: req.body.name, about: req.body.about },
   }, { runValidators: true })
     .then((user) => {
-      if (!user) {
-        res.status(404).send({ message: 'Пользователь не найден' });
-      } else {
-        res.status(200).send({ name: req.body.name, about: req.body.about });
-      }
+      res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -69,11 +65,7 @@ const updateUserAvatar = (req, res) => {
     $set: { avatar: req.body.avatar },
   }, { runValidators: true })
     .then((user) => {
-      if (!user) {
-        res.status(404).send({ message: 'Пользователь не найден' });
-      } else {
-        res.status(200).send({ avatar: req.body.avatar });
-      }
+      res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
