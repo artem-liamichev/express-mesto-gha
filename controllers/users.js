@@ -2,15 +2,15 @@ const User = require('../models/user');
 
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
-  try {
-    User.create({ name, about, avatar });
-    res.status(200).send(req.body);
-  } catch (e) {
-    if (e.kind === 'ObjectId') {
-      return res.status(400).send({ message: 'Переданы некорректные данные' });
-    }
-    res.status(500).send({message: 'Ошибка по умолчанию' });
-  }
+  User.create({ name, about, avatar })
+    .then((user) => res.status(200).send({ data: user }))
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: `${Object.values(err.errors).map(e => e.message).join(', ')}` });
+      } else {
+        res.status(500).send({ message: 'Произошла ошибка' });
+      }
+    });
 };
 
 const getUsers = async (req, res) => {

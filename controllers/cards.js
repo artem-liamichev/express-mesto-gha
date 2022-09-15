@@ -17,14 +17,14 @@ const deleteCard = async (req, res) => {
 };
 
 const likeCard = async (req, res) => {
-  await Card.findByIdAndUpdate (req.params.cardId, {
+  await Card.findByIdAndUpdate(req.params.cardId, {
     $addToSet: { likes: req.user._id, new: true },
   });
   res.status(200).send({ message: 'liked' });
 };
 
 const dislikeCard = async (req, res) => {
-  await Card.findByIdAndUpdate (req.params.cardId, {
+  await Card.findByIdAndUpdate(req.params.cardId, {
     $pull: { likes: req.user._id, new: true },
   });
   res.status(200).send({ message: 'disliked' });
