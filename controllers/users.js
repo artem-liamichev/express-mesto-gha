@@ -41,12 +41,12 @@ const getUserById = (req, res) => {
 const updateUserProfile = (req, res) => {
   User.findByIdAndUpdate(req.user._id, {
     $set: { name: req.body.name, about: req.body.about },
-  }, { new: true, runValidators: true })
+  }, { runValidators: true })
     .then((user) => {
       if (!user) {
         res.status(404).send({ message: 'Пользователь не найден' });
       } else {
-        res.status(200).send(user);
+        res.status(200).send({ data: user });
       }
     })
     .catch((err) => {
@@ -61,12 +61,12 @@ const updateUserProfile = (req, res) => {
 const updateUserAvatar = (req, res) => {
   User.findByIdAndUpdate(req.user._id, {
     $set: { avatar: req.body.avatar },
-  }, { new: true, runValidators: true })
+  }, { runValidators: true })
     .then((user) => {
       if (!user) {
         res.status(404).send({ message: 'Пользователь не найден' });
       } else {
-        res.status(200).send(user);
+        res.status(200).send({ data: user });
       }
     })
     .catch((err) => {
