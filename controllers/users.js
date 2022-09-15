@@ -13,32 +13,56 @@ const createUser = (req, res) => {
     });
 };
 
-const getUsers = async (req, res) => {
-  try {
-    const users = await User.find({});
-    res.status(200).send(users);
-  } catch (e) {
-    if (e.kind === 'ObjectId') {
-      return res.status(400).send({ message: 'Переданы некорректные данные' });
-    }
-    res.status(500).send({message: 'Ошибка по умолчанию' });
-  }
+const getUsers = (req, res) => {
+  User.find({})
+    .then((users) => res.status(200).send(users))
+    .catch((err) => {
+      if (err.kind === 'ObjectId') {
+        res.status(400).send({ message: 'Переданы некорректные данные' });
+      } else {
+        res.status(500).send({ message: 'Ошибка по умолчанию' });
+      }
+    });
 };
 
-const getUserById = async (req, res) => {
+const getUserById = (req, res) => {
   const { id } = req.params;
-  try {
-    const user = await User.findById(id);
-    if (!user) {
-      return res
-        .status(404)
-        .send({ message: 'Пользователь не найден' });
-    }
-    res.status(200).send(user);
-  } catch (e) {
-    res.status(500).send({ message: 'Ошибка по умолчанию' });
-  }
-};
+  User.findById(id)
+    .then((user) => {
+      if (!user) {
+        res.status(404).send({ message: 'Пользователь не найден' });
+      } else {
+        res.status(200).send(user);
+      }
+    })
+    .catch(() => res.status(500).send({ message: 'Ошибка по умолчанию' }))};
+
+// const getUsers = (req, res) => {
+//   try {
+//     const users = User.find({});
+//     res.status(200).send(users);
+//   } catch (e) {
+//     if (e.kind === 'ObjectId') {
+//       return res.status(400).send({ message: 'Переданы некорректные данные' });
+//     }
+//     res.status(500).send({message: 'Ошибка по умолчанию' });
+//   }
+// };
+
+// const getUserById = async (req, res) => {
+//   const { id } = req.params;
+//   try {
+//     const user = await User.findById(id);
+//     if (!user) {
+//       return res
+//         .status(404)
+//         .send({ message: 'Пользователь не найден' });
+//     }
+//     res.status(200).send(user);
+//   } catch (e) {
+//     res.status(500).send({ message: 'Ошибка по умолчанию' });
+//   }
+// };
 
 const updateUserProfile = async (req, res) => {
   try {
