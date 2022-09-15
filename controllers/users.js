@@ -48,7 +48,7 @@ const updateUserProfile = (req, res) => {
   User.findByIdAndUpdate(req.user._id, {
     $set: { name: req.body.name, about: req.body.about },
   }, { runValidators: true })
-    .then((user) => {
+    .then(() => {
       res.status(200).send({ name: req.body.name, about: req.body.about });
     })
     .catch((err) => {
@@ -64,7 +64,7 @@ const updateUserAvatar = (req, res) => {
   User.findByIdAndUpdate(req.user._id, {
     $set: { avatar: req.body.avatar },
   }, { runValidators: true })
-    .then((user) => {
+    .then(() => {
       res.status(200).send({ avatar: req.body.avatar });
     })
     .catch((err) => {
