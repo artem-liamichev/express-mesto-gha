@@ -1,4 +1,5 @@
-[![Tests]https://github.com/artem-liamichev/express-mesto-gha/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/artem-liamichev/express-mesto-gha/actions/workflows/tests-13-sprint.yml) 
+https://github.com/artem-liamichev/express-mesto-gha.git
+
 # Проект Mesto фронтенд + бэкенд
 
 
