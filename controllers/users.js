@@ -4,7 +4,7 @@ const { NOT_FOUND, BAD_REQUEST, INTERNAL_SEVER_ERROR } = require('../utils/error
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .then((user) => res.status(200).send({ data: user }))
+    .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(BAD_REQUEST).send({ message: `${Object.values(err.errors).map((e) => e.message).join(', ')}` });
@@ -16,13 +16,9 @@ const createUser = (req, res) => {
 
 const getUsers = (req, res) => {
   User.find({})
-    .then((users) => res.status(200).send(users))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные' });
-      } else {
-        res.status(INTERNAL_SEVER_ERROR).send({ message: 'Произошла ошибка' });
-      }
+    .then((users) => res.send(users))
+    .catch(() => {
+      res.status(INTERNAL_SEVER_ERROR).send({ message: 'Произошла ошибка' });
     });
 };
 
@@ -33,7 +29,7 @@ const getUserById = (req, res) => {
       if (!user) {
         res.status(NOT_FOUND).send({ message: 'Пользователь не найден' });
       } else {
-        res.status(200).send(user);
+        res.send(user);
       }
     })
     .catch((err) => {
@@ -66,7 +62,7 @@ const updateUserAvatar = (req, res) => {
     $set: { avatar: req.body.avatar },
   }, { runValidators: true, new: true })
     .then(() => {
-      res.status(200).send({ avatar: req.body.avatar });
+      res.send({ avatar: req.body.avatar });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
