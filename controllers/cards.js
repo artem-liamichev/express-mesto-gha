@@ -3,7 +3,7 @@ const { NOT_FOUND, BAD_REQUEST, INTERNAL_SEVER_ERROR } = require('../utils/error
 
 const getCards = (req, res) => {
   Card.find({})
-    .then((cards) => res.status(200).send(cards))
+    .then((cards) => res.send(cards))
     .catch(() => {
       res.status(INTERNAL_SEVER_ERROR).send({ message: 'Произошла ошибка' });
     });
@@ -12,11 +12,9 @@ const getCards = (req, res) => {
 const createCard = (req, res) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
-    .then((card) => res.status(200).send({ data: card }))
+    .then((card) => res.send({ data: card }))
     .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(BAD_REQUEST).send({ message: `${Object.values(err.errors).map((e) => e.message).join(', ')}` });
-      } else if (err.name === 'ValidationError') {
+      if (err.name === 'ValidationError') {
         res.status(BAD_REQUEST).send({ message: `${Object.values(err.errors).map((e) => e.message).join(', ')}` });
       } else {
         res.status(INTERNAL_SEVER_ERROR).send({ message: 'Произошла ошибка' });
@@ -30,7 +28,7 @@ const deleteCard = (req, res) => {
       if (!card) {
         res.status(NOT_FOUND).send({ message: 'Карточка с указанным id не найдена.' });
       } else {
-        res.status(200).send({ message: 'deleted' });
+        res.send({ message: 'deleted' });
       }
     })
     .catch((err) => {
@@ -44,14 +42,14 @@ const deleteCard = (req, res) => {
 
 const likeCard = (req, res) => {
   Card.findByIdAndUpdate(req.params.cardId, {
-    $addToSet: { likes: req.user._id, new: true },
-  })
+    $addToSet: { likes: req.user._id },
+  }, { new: true })
     .populate('likes')
     .then((card) => {
       if (!card) {
         res.status(NOT_FOUND).send({ message: 'Передан несуществующий id карточки.' });
       } else {
-        res.status(200).send({ data: card });
+        res.send({ data: card });
       }
     })
     .catch((err) => {
@@ -65,14 +63,14 @@ const likeCard = (req, res) => {
 
 const dislikeCard = (req, res) => {
   Card.findByIdAndUpdate(req.params.cardId, {
-    $pull: { likes: req.user._id, new: true },
-  })
+    $pull: { likes: req.user._id },
+  }, { new: true })
     .populate('likes')
     .then((card) => {
       if (!card) {
         res.status(NOT_FOUND).send({ message: 'Передан несуществующий id карточки' });
       } else {
-        res.status(200).send({ data: card });
+        res.send({ data: card });
       }
     })
     .catch((err) => {
