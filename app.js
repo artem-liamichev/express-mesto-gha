@@ -1,14 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+
 const { celebrate, Joi, errors } = require('celebrate');
 
 const { PORT = 3000 } = process.env;
 
 const app = express();
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
 const { userRoutes } = require('./routes/users');
 const { cardRoutes } = require('./routes/cards');
@@ -22,6 +20,8 @@ const { validateUserBody, validateAuthentication } = require('./validators');
 //   };
 //   next();
 // });
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post('/signin', validateAuthentication, login);
 
@@ -61,8 +61,10 @@ app.all('*', (req, res, next) => {
   next();
 });
 
-app.use(errorHandler);
 app.use(errors());
+
+app.use(errorHandler);
+
 async function main() {
   await mongoose.connect('mongodb://localhost:27017/mestodb');
 
