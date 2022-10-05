@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const { errors } = require('celebrate');
+const { celebrate, Joi, errors } = require('celebrate');
 
 const { PORT = 3000 } = process.env;
 
@@ -25,7 +25,32 @@ const { validateUserBody, validateAuthentication } = require('./validators');
 
 app.post('/signin', validateAuthentication, login);
 
-app.post('/signup', validateUserBody, createUser);
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30)
+      .messages({
+        'string.min': 'Минимальная длина поля "name" - 2',
+        'string.max': 'Максимальная длина поля "name" - 30',
+      }),
+    about: Joi.string().min(2).max(30)
+      .messages({
+        'string.min': 'Минимальная длина поля "about" - 2',
+        'string.max': 'Максимальная длина поля "about" - 30',
+      }),
+    password: Joi.string().required()
+      .messages({
+        'string.empty': 'Поле "password" должно быть заполнено',
+      }),
+    email: Joi.string().required().email()
+      .message('Поле "email" должно быть валидным email-адресом')
+      .messages({
+        'string.empty': 'Поле "email" должно быть заполнено',
+      }),
+    avatar: Joi.string()
+      .regex(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/)
+      .message('Поле "avatar" должно быть валидным url-адресом'),
+  }),
+}), createUser);
 
 app.use('/users', auth, userRoutes);
 

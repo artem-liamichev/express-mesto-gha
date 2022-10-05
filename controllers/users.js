@@ -27,10 +27,10 @@ const createUser = (req, res, next) => {
       res.send({ data: user });
     })
     .catch((err) => {
-      if (err.code === 11000) {
-        throw new ConflictingRequestError('Неправильный пароль или e-mail');
-      } else if (err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные');
+      if (err.name === 'ValidationError') {
+        next(new BadRequestError('Переданы некорректные данные'));
+      } else if (err.code === 11000) {
+        next(new ConflictingRequestError('Неправильный пароль или e-mail'));
       } else {
         next(err);
       }
