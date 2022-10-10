@@ -22,9 +22,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     unique: true,
     required: true,
-    validate: { // опишем свойство validate
-      validator(v) { // validator - функция проверки данных. v - значение свойства age
-        return validator.isEmail(v); // если возраст меньше 18, вернётся false
+    validate: {
+      validator(v) {
+        return validator.isEmail(v);
       },
       message: 'Вам нужно ввести e-mail',
     },
@@ -34,7 +34,9 @@ const userSchema = new mongoose.Schema({
     select: false,
     required: true,
   },
-});
+},
+{ versionKey: false },
+);
 
 userSchema.methods.toJSON = function () {
   const user = this.toObject();

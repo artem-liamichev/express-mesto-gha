@@ -30,8 +30,8 @@ const createUser = (req, res, next) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные'));
       } else if (err.code === 11000) {
-        console.log('err.code:', err.code);
-        next(new ConflictingRequestError('Неправильный пароль или e-mail'));
+        // console.log('err.code:', err.code);
+        next(new ConflictingRequestError('Добавление пользователя с существующим email в БД'));
       } else {
         next(err);
       }
