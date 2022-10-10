@@ -42,7 +42,7 @@ const login = (req, res, next) => {
   const { email, password } = req.body;
   User.findOne({ email })
     .select('+password')
-    .orFail(() => { throw new NotFoundError('Пользователь не найден'); })
+    .orFail(() => { throw new UnauthorizedRequestError('Авторизация с несуществующими email и password в БД'); })
     .then((user) => {
       bcrypt.compare(password, user.password)
         .then((isUserValid) => {
