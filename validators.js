@@ -1,4 +1,5 @@
 const { celebrate, Joi } = require('celebrate');
+Joi.objectId = require('joi-objectid')(Joi);
 
 // const validateUserBody = celebrate({
 //   body: Joi.object().keys({
@@ -45,7 +46,24 @@ const validateAuthentication = celebrate({
   }),
 });
 
+// const validateUserId = celebrate({
+//   Joi.object({
+//     id: Joi.ObjectId(),
+//   })
+// });
+
+const validateUserId = celebrate({
+  params: Joi.object().keys({
+    id: Joi.objectId(),
+  }),
+});
+
+// const validateUserId = Joi.object({
+//   id: Joi.objectId(),
+// });
+
 module.exports = {
   validateUserBody,
   validateAuthentication,
+  validateUserId,
 };

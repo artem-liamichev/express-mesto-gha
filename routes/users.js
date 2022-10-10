@@ -6,9 +6,11 @@ const {
   getUsers, getUserInfo, getUserById, updateUserProfile, updateUserAvatar,
 } = require('../controllers/users');
 
+const { validateUserId } = require('../validators');
+
 userRoutes.get('/', getUsers);
 userRoutes.get('/me', getUserInfo);
-userRoutes.get('/:id', getUserById);
+userRoutes.get('/:id', validateUserId, getUserById);
 userRoutes.patch('/me', updateUserProfile);
 userRoutes.patch('/me/avatar', updateUserAvatar);
 
