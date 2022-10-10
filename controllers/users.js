@@ -30,7 +30,6 @@ const createUser = (req, res, next) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные'));
       } else if (err.code === 11000) {
-        // console.log('err.code:', err.code);
         next(new ConflictingRequestError('Добавление пользователя с существующим email в БД'));
       } else {
         next(err);
@@ -42,7 +41,7 @@ const login = (req, res, next) => {
   const { email, password } = req.body;
   User.findOne({ email })
     .select('+password')
-    .orFail(() => { throw new NotFoundError('Пользователь не найден'); })
+    .orFail((new NotFoundError('Пользователь не найден')))
     .then((user) => {
       bcrypt.compare(password, user.password)
         .then((isUserValid) => {
@@ -73,18 +72,7 @@ const getUsers = (req, res, next) => {
     });
 };
 
-// const getUserInfo = (req, res, next) => {
-//   console.log(req.user);
-//   User.find({})
-//     .then((user) => res.send(user))
-//     .catch((err) => {
-//       next(err);
-//     });
-// };
-
 const getUserInfo = (req, res, next) => {
-  // const { id } = req.user._id;
-  // console.log('id:', id);
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {

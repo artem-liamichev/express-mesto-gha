@@ -1,17 +1,6 @@
 const { celebrate, Joi } = require('celebrate');
 Joi.objectId = require('joi-objectid')(Joi);
 
-// const validateUserBody = celebrate({
-//   body: Joi.object().keys({
-//     email: Joi.string().required().email(),
-//     password: Joi.string().required(),
-//     name: Joi.string().min(2).max(30),
-//     about: Joi.string().min(2).max(30),
-//     avatar: Joi.string()
-//       .regex(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/),
-//   }),
-// });
-
 const validateUserBody = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30)
@@ -34,6 +23,7 @@ const validateUserBody = celebrate({
         'string.empty': 'Поле "email" должно быть заполнено',
       }),
     avatar: Joi.string()
+      // eslint-disable-next-line no-useless-escape
       .regex(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/)
       .message('Поле "avatar" должно быть валидным url-адресом'),
   }),
@@ -46,21 +36,11 @@ const validateAuthentication = celebrate({
   }),
 });
 
-// const validateUserId = celebrate({
-//   Joi.object({
-//     id: Joi.ObjectId(),
-//   })
-// });
-
 const validateUserId = celebrate({
   params: Joi.object().keys({
     id: Joi.objectId(),
   }),
 });
-
-// const validateUserId = Joi.object({
-//   id: Joi.objectId(),
-// });
 
 module.exports = {
   validateUserBody,

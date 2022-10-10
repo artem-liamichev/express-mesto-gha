@@ -1,7 +1,6 @@
 const Card = require('../models/card');
 const NotFoundError = require('../middlewares/errors/NotFoundError');
 const BadRequestError = require('../middlewares/errors/BadRequestError');
-const InternalServerError = require('../middlewares/errors/InternalServerError');
 
 const getCards = (req, res, next) => {
   Card.find({})
