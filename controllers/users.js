@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const NotFoundError = require('../middlewares/errors/NotFoundError');
 const BadRequestError = require('../middlewares/errors/BadRequestError');
-const InternalServerError = require('../middlewares/errors/InternalServerError');
 const ConflictingRequestError = require('../middlewares/errors/ConflictingRequestError');
 const UnauthorizedRequestError = require('../middlewares/errors/UnauthorizedRequestError');
 
@@ -125,7 +124,7 @@ const updateUserProfile = (req, res, next) => {
     });
 };
 
-const updateUserAvatar = (req, res) => {
+const updateUserAvatar = (req, res, next) => {
   User.findByIdAndUpdate(req.user._id, {
     $set: { avatar: req.body.avatar },
   }, { runValidators: true, new: true })
@@ -136,7 +135,7 @@ const updateUserAvatar = (req, res) => {
       if (err.name === 'ValidationError') {
         throw new BadRequestError('Переданы некорректные данные');
       } else {
-        throw new InternalServerError('Произошла ошибка');
+        next(err);
       }
     });
 };
