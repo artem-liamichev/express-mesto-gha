@@ -1,6 +1,7 @@
 const Card = require('../models/card');
-const NotFoundError = require('../middlewares/errors/NotFoundError');
-const BadRequestError = require('../middlewares/errors/BadRequestError');
+const NotFoundError = require('../errors/NotFoundError');
+const BadRequestError = require('../errors/BadRequestError');
+const ForbiddenError = require('../errors/ForbiddenError');
 
 const getCards = (req, res, next) => {
   Card.find({})
@@ -16,7 +17,7 @@ const createCard = (req, res, next) => {
     .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные');
+        next(new BadRequestError('Переданы некорректные данные'));
       } else {
         next(err);
       }
@@ -27,16 +28,16 @@ const deleteCard = (req, res, next) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (!card) {
-        throw new NotFoundError('Карточка с указанным id не найдена');
+        next(new NotFoundError('Карточка с указанным id не найдена'));
       } else if (req.user._id === card.owner.toString()) {
         res.send({ message: 'deleted' });
       } else {
-        throw new BadRequestError('Вы можете удалить только свою карточку');
+        next(new ForbiddenError('Вы можете удалить только свою карточку'));
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestError('Удаление карточки с некорректным id');
+        next(new BadRequestError('Удаление карточки с некорректным id'));
       } else {
         next(err);
       }
@@ -50,14 +51,14 @@ const likeCard = (req, res, next) => {
     .populate('likes')
     .then((card) => {
       if (!card) {
-        throw new NotFoundError('Передан несуществующий id карточки');
+        next(new NotFoundError('Передан несуществующий id карточки'));
       } else {
         res.send({ data: card });
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestError('Добавление лайка с некорректным id карточки');
+        next(new BadRequestError('Добавление лайка с некорректным id карточки'));
       } else {
         next(err);
       }
@@ -71,14 +72,14 @@ const dislikeCard = (req, res, next) => {
     .populate('likes')
     .then((card) => {
       if (!card) {
-        throw new NotFoundError('Передан несуществующий id карточки');
+        next(new NotFoundError('Передан несуществующий id карточки'));
       } else {
         res.send({ data: card });
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestError('Удаление лайка с некорректным id');
+        next(new BadRequestError('Удаление лайка с некорректным id'));
       } else {
         next(err);
       }

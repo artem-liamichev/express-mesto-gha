@@ -1,10 +1,10 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const NotFoundError = require('../middlewares/errors/NotFoundError');
-const BadRequestError = require('../middlewares/errors/BadRequestError');
-const ConflictingRequestError = require('../middlewares/errors/ConflictingRequestError');
-const UnauthorizedRequestError = require('../middlewares/errors/UnauthorizedRequestError');
+const NotFoundError = require('../errors/NotFoundError');
+const BadRequestError = require('../errors/BadRequestError');
+const ConflictingRequestError = require('../errors/ConflictingRequestError');
+const UnauthorizedRequestError = require('../errors/UnauthorizedRequestError');
 
 const createUser = (req, res, next) => {
   const {
@@ -54,7 +54,7 @@ const login = (req, res, next) => {
             );
             res.send({ token });
           } else {
-            throw new UnauthorizedRequestError('Проблема с аутентификацией или авторизацией');
+            next(new UnauthorizedRequestError('Проблема с аутентификацией или авторизацией'));
           }
         });
     })
@@ -75,7 +75,7 @@ const getUserInfo = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Пользователь не найден');
+        next(new NotFoundError('Пользователь не найден'));
       } else {
         res.send(user);
       }
@@ -94,7 +94,7 @@ const getUserById = (req, res, next) => {
   User.findById(id)
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Пользователь не найден');
+        next(new NotFoundError('Пользователь не найден'));
       } else {
         res.send(user);
       }
@@ -117,7 +117,7 @@ const updateUserProfile = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные');
+        next(new BadRequestError('Переданы некорректные данные'));
       } else {
         next(err);
       }
@@ -133,7 +133,7 @@ const updateUserAvatar = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные');
+        next(new BadRequestError('Переданы некорректные данные'));
       } else {
         next(err);
       }
