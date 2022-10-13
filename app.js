@@ -13,7 +13,7 @@ const { cardRoutes } = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const errorHandler = require('./middlewares/errorHandler');
-const { NotFoundError } = require('./errors/NotFoundError');
+const NotFoundError = require('./errors/NotFoundError');
 const { validateUserBody, validateAuthentication } = require('./validators');
 
 app.use(bodyParser.json());
@@ -24,11 +24,14 @@ app.post('/signup', validateUserBody, createUser);
 app.use(auth);
 app.use('/users', userRoutes);
 app.use('/cards', cardRoutes);
+
 app.use(errors());
+
+app.use(errorHandler);
+
 app.all('*', (req, res, next) => {
   next(new NotFoundError('Неправильный путь'));
 });
-app.use(errorHandler);
 
 async function main() {
   await mongoose.connect('mongodb://localhost:27017/mestodb');
