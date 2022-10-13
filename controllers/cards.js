@@ -25,11 +25,12 @@ const createCard = (req, res, next) => {
 };
 
 const deleteCard = (req, res, next) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  Card.findById(req.params.cardId)
     .then((card) => {
       if (!card) {
         next(new NotFoundError('Карточка с указанным id не найдена'));
       } else if (req.user._id === card.owner.toString()) {
+        Card.remove(card);
         res.send({ message: 'deleted' });
       } else {
         next(new ForbiddenError('Вы можете удалить только свою карточку'));
@@ -48,7 +49,6 @@ const likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(req.params.cardId, {
     $addToSet: { likes: req.user._id },
   }, { new: true })
-    .populate('likes')
     .then((card) => {
       if (!card) {
         next(new NotFoundError('Передан несуществующий id карточки'));
@@ -69,7 +69,6 @@ const dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(req.params.cardId, {
     $pull: { likes: req.user._id },
   }, { new: true })
-    .populate('likes')
     .then((card) => {
       if (!card) {
         next(new NotFoundError('Передан несуществующий id карточки'));
