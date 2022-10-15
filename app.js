@@ -24,14 +24,13 @@ app.post('/signup', validateUserBody, createUser);
 app.use(auth);
 app.use('/users', userRoutes);
 app.use('/cards', cardRoutes);
+app.all('*', (req, res, next) => {
+  next(new NotFoundError('Неправильный путь'));
+});
 
 app.use(errors());
 
 app.use(errorHandler);
-
-app.all('*', (req, res, next) => {
-  next(new NotFoundError('Неправильный путь'));
-});
 
 async function main() {
   await mongoose.connect('mongodb://localhost:27017/mestodb');
