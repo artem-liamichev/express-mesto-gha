@@ -24,7 +24,7 @@ const validateUserBody = celebrate({
       }),
     avatar: Joi.string()
       // eslint-disable-next-line no-useless-escape
-      .regex(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/)
+      .regex(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/)
       .message('Поле "avatar" должно быть валидным url-адресом'),
   }),
 });
@@ -48,7 +48,7 @@ const validateUpdateUserAvatarBody = celebrate({
   body: Joi.object().keys({
     avatar: Joi.string()
       // eslint-disable-next-line no-useless-escape
-      .regex(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/)
+      .regex(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/)
       .message('Поле "avatar" должно быть валидным url-адресом'),
   }),
 });
@@ -62,7 +62,7 @@ const validateCardBody = celebrate({
       }),
     link: Joi.string().required()
       // eslint-disable-next-line no-useless-escape
-      .regex(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/)
+      .regex(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/)
       .message('Поле "link" должно быть валидным url-адресом'),
   }),
 });
